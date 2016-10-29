@@ -1,4 +1,4 @@
-# TODO: YOUR NAME AND STUDENT NUMBER
+# TODO: Matthew Nemitz 260506071
 .data
 bitmapDisplay: .space 0x80000 # enough memory for a 512x256 bitmap display
 resolution: .word  512 256    # width and height of the bitmap display
@@ -24,19 +24,47 @@ JuliaC3:  .float 0    0.8
 z0: .float  0 0
 
 # TODO: define various constants you need in your .data segment here
-
+i: .asciiz "i"
+plus: .asciiz " + "
+newline: .asciiz "\n"
 ########################################################################################
 .text
-	
+
 	# TODO: Write your function testing code here
-		
-	li $v0 10 # exit
+	la	$a0	JuliaC1
+	l.s	$f12	($a0)
+	l.s	$f13	4($a0)
+	jal	printComplex
+	jal	printNewLine
+	li 	$v0 	10 # exit
 	syscall
 
 
 # TODO: Write your functions to implement various assignment objectives here
-
-
+########################################################################################
+# Puts complex number from two float args to the console. First is the real component, second imaginary
+printComplex:
+	# First print $f12 float as is (real component)
+	addi	$v0	$0	2
+	syscall
+	# Next print plus sign, changing $v0 from 2 to 4 for string...
+	la	$a0	plus
+	addi	$v0	$v0	2
+	syscall
+	# Then next float
+	addi	$v0	$v0	-2
+	mov.s	$f12	$f13
+	syscall
+	# Finally the i
+	addi	$v0	$v0	2
+	la	$a0	i
+	syscall
+	jr	$ra
+printNewLine:
+	la	$a0	newline
+	li	$v0	4
+	syscall
+	jr	$ra
 ########################################################################################
 # Computes a colour corresponding to a given iteration count in $a0
 # The colours cycle smoothly through green blue and red, with a speed adjustable 
